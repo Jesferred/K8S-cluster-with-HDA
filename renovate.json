@@ -1,0 +1,130 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "enabled": "true",
+  "baseBranches": [
+    "main"
+  ],
+  "packageRules": [
+    {
+      "depTypeList": [
+        "devDependencies"
+      ],
+      "matchUpdateTypes": [
+        "minor"
+      ],
+      "automerge": false
+    },
+    {
+      "datasources": [
+        "docker"
+      ],
+      "packageNames": [
+        "kindest/node"
+      ],
+      "automerge": false,
+      "commitMessageTopic": "kindest/node"
+    },
+    {
+      "datasources": [
+        "docker"
+      ],
+      "packageNames": [
+        "registry"
+      ],
+      "automerge": false,
+      "commitMessageTopic": "Docker registry"
+    },
+    {
+      "datasources": [
+        "pypi"
+      ],
+      "packageNames": [
+        "ansible",
+        "kubernetes"
+      ],
+      "automerge": false
+    },
+    {
+      "matchPackageNames": [
+        "golang"
+      ],
+      "allowedVersions": "<=1.22"
+    },
+    {
+      "matchPackageNames": [
+        "kindest/node"
+      ],
+      "allowedVersions": "<=1.32"
+    },
+    {
+      "matchPackageNames": [
+        "kubernetes-sigs/cri-tools"
+      ],
+      "allowedVersions": "<=1.32"
+    }
+  ],
+  "prHourlyLimit": 5,
+  "prConcurrentLimit": 5,
+  "rangeStrategy": "bump",
+  "renovateFork": true,
+  "includeForks": false,
+  "stabilityDays": 5,
+  "regexManagers": [
+    {
+      "fileMatch": [
+        "^lib/common.sh$"
+      ],
+      "matchStrings": [
+        "KIND_VERSION:-\"(?<currentValue>.*?)\"}"
+      ],
+      "depNameTemplate": "kubernetes-sigs/kind",
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "fileMatch": [
+        "^lib/common.sh$"
+      ],
+      "matchStrings": [
+        "ANSIBLE_VERSION:-\"(?<currentValue>.*?)\"}"
+      ],
+      "depNameTemplate": "ansible",
+      "datasourceTemplate": "pypi"
+    },
+    {
+      "fileMatch": [
+        "^vm-setup/roles/packages_installation/defaults/main.yml$"
+      ],
+      "matchStrings": [
+        "kubernetes==(?<currentValue>.*?)"
+      ],
+      "depNameTemplate": "kubernetes",
+      "datasourceTemplate": "pypi"
+    },
+    {
+      "fileMatch": [
+        "^lib/common.sh$"
+      ],
+      "matchStrings": [
+        "DOCKER_REGISTRY_IMAGE:-\"registry:(?<currentValue>.*?)\"}"
+      ],
+      "depNameTemplate": "registry",
+      "datasourceTemplate": "docker"
+    }
+  ],
+  "assignees": [
+    "kashifest"
+  ],
+  "assigneesSampleSize": 1,
+  "reviewers": [
+    "lentzi90",
+    "mboukhalfa",
+    "Rozzii",
+    "smoshiur1237",
+    "Sunnatillo",
+    "adilGhaffarDev",
+    "tuminoid"
+  ],
+  "reviewersSampleSize": 2
+}

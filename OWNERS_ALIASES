@@ -1,0 +1,16 @@
+# See the OWNERS docs: https://git.k8s.io/community/contributors/guide/owners.md
+
+aliases:
+  metal3-dev-env-maintainers:
+  - elfosardo
+  - kashifest
+  - lentzi90
+  - mboukhalfa
+  - Rozzii
+  - smoshiur1237
+  - tuminoid
+
+  metal3-dev-env-reviewers:
+  - dtantsur
+  - Sunnatillo
+

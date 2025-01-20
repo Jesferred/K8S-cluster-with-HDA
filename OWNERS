@@ -1,0 +1,20 @@
+# See the OWNERS docs at https://go.k8s.io/owners
+
+approvers:
+- metal3-dev-env-maintainers
+
+reviewers:
+- metal3-dev-env-maintainers
+- metal3-dev-env-reviewers
+
+emeritus_approvers:
+- fmuyassarov
+- furkatgofurov7
+- hardys
+- maelk
+
+emeritus_reviewers:
+- jan-est
+- macaptain
+- namnx228
+- xenwar

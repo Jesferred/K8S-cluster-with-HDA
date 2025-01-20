@@ -1,0 +1,69 @@
+---
+- name: Generate templates
+  include_tasks: generate_templates.yml
+  when: v1aX_integration_test_action in provision_actions
+
+- name: Download image for deployment
+  include_tasks: download_image.yml
+  when: v1aX_integration_test_action in image_download_actions
+
+- name: Provision cluster
+  shell: kubectl apply -f "{{ TEMP_GEN_DIR }}/{{ CAPM3_VERSION }}_cluster_{{ IMAGE_OS }}.yaml" -n "{{ NAMESPACE }}"
+  register: kubectl_apply_cluster
+  changed_when: "'configured' in kubectl_apply_cluster.stdout"
+  when: v1aX_integration_test_action in provision_cluster_actions
+
+- name: Create control plane
+  shell: kubectl apply -f "{{ TEMP_GEN_DIR }}/{{ CAPM3_VERSION }}_controlplane_{{ IMAGE_OS }}.yaml" -n "{{ NAMESPACE }}"
+  register: kubectl_apply_controlplane
+  changed_when: "'configured' in kubectl_apply_controlplane.stdout"
+  when: v1aX_integration_test_action in provision_controlplane_actions
+
+- name: Create worker nodes
+  shell: kubectl apply -f "{{ TEMP_GEN_DIR }}/{{ CAPM3_VERSION }}_workers_{{ IMAGE_OS }}.yaml" -n "{{ NAMESPACE }}"
+  register: kubectl_apply_workers
+  changed_when: "'configured' in kubectl_apply_workers.stdout"
+  when: v1aX_integration_test_action in provision_workers_actions
+
+- name: verify deployment
+  include_tasks: verify.yml
+  when: v1aX_integration_test_action in verify_actions
+
+- name: pivot
+  include_tasks: move.yml
+  when: v1aX_integration_test_action in pivot_actions
+
+- name: repivot
+  include_tasks: move_back.yml
+  when: v1aX_integration_test_action in repivot_actions
+
+- name: Deprovision worker nodes
+  kubernetes.core.k8s:
+    state: absent
+    src: "{{ TEMP_GEN_DIR }}/{{ CAPM3_VERSION }}_workers_{{ IMAGE_OS }}.yaml"
+    namespace: "{{ NAMESPACE }}"
+  ignore_errors: yes
+  when: v1aX_integration_test_action in deprovision_workers_actions
+
+- name: Deprovision control plane
+  kubernetes.core.k8s:
+    state: absent
+    src: "{{ TEMP_GEN_DIR }}/{{ CAPM3_VERSION }}_controlplane_{{ IMAGE_OS }}.yaml"
+    namespace: "{{ NAMESPACE }}"
+  ignore_errors: yes
+  when: v1aX_integration_test_action in deprovision_controlplane_actions
+
+- name: Deprovision cluster
+  kubernetes.core.k8s:
+    state: absent
+    api_version: cluster.x-k8s.io/{{ CAPI_VERSION }}
+    kind: Cluster
+    namespace: "{{ NAMESPACE }}"
+    name: "{{ CLUSTER_NAME }}"
+  ignore_errors: yes
+  when: v1aX_integration_test_action in deprovision_cluster_actions
+
+- name: Cleanup deployment
+  include_tasks: cleanup.yml
+  when: v1aX_integration_test_action in cleanup_actions
+
