@@ -1,0 +1,34 @@
+name: CI-Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+jobs:
+  lint_and_test:
+    runs-on: ubuntu-latest
+    steps: 
+    - name: Checkout
+      uses: actions/checkout@v3
+      
+    - name: Install ShellCheck
+      run: sudo apt-get update && sudo apt-get install -y shellcheck
+
+    - name: Lint bash scripts
+      run: shellcheck ./**/*.sh
+
+  notify_telegram:
+    needs: [lint_and_test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Telegram message
+        if: always()
+        run: |
+          if [ "${{ needs.lint_and_test.result }}" = "success" ]; then
+            MSG="CI PASSED! Repository: ${{ GITHUB_REPOSITORY }} Commit: ${{ GITHUB_WORKFLOW_SHA }}"
+          else
+            MSG="CI FAILED! Repository: ${{ GITHUB_REPOSITORY }} Commit: ${{ GITHUB_WORKFLOW_SHA }} Check logs!"
+          fi
+
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+               -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
+               -d text="${MSG}"
