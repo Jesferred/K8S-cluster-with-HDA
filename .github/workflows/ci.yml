@@ -25,10 +25,12 @@ jobs:
         run: |
           if [ "${{ needs.lint_and_test.result }}" = "success" ]; then
             MSG="CI PASSED!
-                 Repository: ${{ github.repository }} Commit: ${{ github.sha }}"
+          Repository: ${{ github.repository }}
+          Commit: ${{ github.sha }}"
           else
             MSG="CI FAILED!
-                 Repository: ${{ github.repository }} Commit: ${{ github.sha }} Check logs!"
+          Repository: ${{ github.repository }}
+          Commit: ${{ github.sha }} Check logs!"
           fi
 
           curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
