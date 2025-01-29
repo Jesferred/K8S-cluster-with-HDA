@@ -83,7 +83,7 @@ cluster.x-k8s.io/cluster-api-autoscaler-node-group-max-size: "1"
 capacity.cluster-autoscaler.kubernetes.io/cpu: "2"
 capacity.cluster-autoscaler.kubernetes.io/ephemeral-disk: 5Gi
 capacity.cluster-autoscaler.kubernetes.io/gpu-count: "0"
-capacity.cluster-autoscaler.kubernetes.io/memory: 4096M ""
+capacity.cluster-autoscaler.kubernetes.io/memory: 4096M
 ```
 ## **If using values min 0, the last three lines must be written.**
 ## You need to give permissions to the cluster autoscaler.
@@ -91,7 +91,9 @@ capacity.cluster-autoscaler.kubernetes.io/memory: 4096M ""
 kubectl apply -f ca-metal3-rbac.yaml
 ```
 ## Untaint controlplane
+```bash
 kubectl taint node controlplane-role.kubernetes.io/control-plane:NoSchedule-
+```
 ## If the important pods are left on the worker's node, we do drain
 ```bash
 kubectl drain test1-worker-node --delete-emptydir-data --ignore-daemonsets
